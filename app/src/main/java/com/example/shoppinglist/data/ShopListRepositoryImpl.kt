@@ -1,12 +1,23 @@
 package com.example.shoppinglist.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.domain.ShopListRepository
 
 object ShopListRepositoryImpl : ShopListRepository {
 
+    private val shopListLD = MutableLiveData<List<ShopItem>>()
     private val shopList = mutableListOf<ShopItem>()
+
     private var autoIncrementId = 0
+
+    init {
+        for (i in 0 until 10) {
+            val item = ShopItem("$i", i, true)
+            addShopItem(item)
+        }
+    }
 
     override fun addShopItem(shopItem: ShopItem) {
         if (shopItem.id == ShopItem.UNDEFINED_ID) {
@@ -31,13 +42,7 @@ object ShopListRepositoryImpl : ShopListRepository {
         } ?: throw RuntimeException("Element with id $shopItemId not found")
     }
 
-    override fun getShopList(): List<ShopItem> {
-        return shopList.toList()
-    }
-
-    // add this method to implement the missing abstract member in the interface
-    override fun getShopList(shopList: Int): List<ShopItem> {
-        // add your implementation here
-        return listOf()
+    override fun getShopList(shopList: Int): MutableLiveData<List<ShopItem>> {
+        return shopListLD
     }
 }
